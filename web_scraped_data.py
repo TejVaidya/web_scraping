@@ -8,6 +8,7 @@ db = get_db_connection()
 coll = "urls"
 store = "stored"
 links = []
+image_src_list=[]
 
 source = requests.get("https://medium.com/topic/editors-picks").text
 soup = BeautifulSoup(source, "lxml")
@@ -23,13 +24,14 @@ def get_desc(link):
         desc = soup.find("p")
         txt=desc.text
         return(txt)
-    
+
 def get_img(src):
     source=requests.get(src).text
     soup=BeautifulSoup(source,"lxml")
     image=soup.find("img")
-    sour=image["src"]
-    return(sour)
+    src_url=image["src"]
+    image_src_list.append(src_url)
+    return(src_url)
 
 selector = 'h3 > a'
 found=soup.select(selector)
@@ -39,6 +41,7 @@ for x in found:
     print("Url :" +link)
     print("Title : " +x.text)
     desc=get_desc(link)
+    img_src=get_img(link)
     print(desc)
-    one={"title" : (x.text) , "url" : link , "Description" : desc}
+    one={"title" : (x.text) , "url" : link , "Description" : desc, "Imagesource" : img_src}
     db[store].insert_one(one)
