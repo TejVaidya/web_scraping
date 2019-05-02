@@ -23,6 +23,13 @@ def get_desc(link):
         desc = soup.find("p")
         txt=desc.text
         return(txt)
+    
+def get_img(src):
+    source=requests.get(src).text
+    soup=BeautifulSoup(source,"lxml")
+    image=soup.find("img")
+    sour=image["src"]
+    return(sour)
 
 selector = 'h3 > a'
 found=soup.select(selector)
@@ -35,6 +42,3 @@ for x in found:
     print(desc)
     one={"title" : (x.text) , "url" : link , "Description" : desc}
     db[store].insert_one(one)
-
-
-
